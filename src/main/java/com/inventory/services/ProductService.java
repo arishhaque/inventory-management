@@ -18,7 +18,7 @@ public class ProductService {
 
     public List<Product> findAll() throws BaseException {
 
-        throw new BaseException(ErrorCodes.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), "Invalid Request");
-        //return productRepository.findAll();
+        //throw new BaseException(ErrorCodes.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), "Invalid Request");
+        return productRepository.findAll();
     }
 }
