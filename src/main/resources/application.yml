@@ -1,0 +1,17 @@
+server:
+  port: 8090
+  context-path: "/inventory-service/api"
+  display-name: "Inventory Service"
+  session:
+    timeout: 1000
+
+
+# datasource
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/inventory_db?serverTimezone=UTC
+    username: admin
+    password: admin@123
+    #validationQuery: "SELECT 1"
+#spring.jpa.hibernate.namin.physical.strategy: "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"
