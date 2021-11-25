@@ -1,4 +1,4 @@
-package com.inventory.exception;
+package com.inventory.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

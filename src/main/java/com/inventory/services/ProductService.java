@@ -1,6 +1,6 @@
 package com.inventory.services;
 
-import com.inventory.exception.BaseException;
+import com.inventory.exceptions.BaseException;
 import com.inventory.models.Product;
 import com.inventory.repositories.ProductRepository;
 import com.inventory.utils.ErrorCodes;

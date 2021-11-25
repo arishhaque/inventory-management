@@ -1,6 +1,6 @@
 package com.inventory.controllers;
 
-import com.inventory.exception.BaseException;
+import com.inventory.exceptions.BaseException;
 import com.inventory.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

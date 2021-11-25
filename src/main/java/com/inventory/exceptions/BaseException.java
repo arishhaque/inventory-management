@@ -1,4 +1,4 @@
-package com.inventory.exception;
+package com.inventory.exceptions;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.inventory.utils.ErrorCodes;
