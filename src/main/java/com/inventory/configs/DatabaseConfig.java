@@ -18,7 +18,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = {"com.inventory.models"})
+@EnableJpaRepositories(basePackages = {"com.inventory.repositories"})
 public class DatabaseConfig {
 
     @Value("${spring.datasource.driverClassName}")

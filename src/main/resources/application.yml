@@ -1,7 +1,8 @@
 server:
-  port: 8090
-  context-path: "/inventory-service/api"
-  display-name: "Inventory Service"
+  port: 8080
+  servlet:
+    context-path: /inventory-service/api
+  display-name: Inventory Service
   session:
     timeout: 1000
 
@@ -13,5 +14,5 @@ spring:
     url: jdbc:mysql://localhost:3306/inventory_db?serverTimezone=UTC
     username: admin
     password: admin@123
-    #validationQuery: "SELECT 1"
-#spring.jpa.hibernate.namin.physical.strategy: "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"
+    validationQuery: "SELECT 1"
+#spring.jpa.hibernate.naming.physical.strategy: "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"
