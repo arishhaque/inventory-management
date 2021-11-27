@@ -5,6 +5,7 @@ import com.inventory.exceptions.BaseException;
 import com.inventory.models.Product;
 import com.inventory.repositories.ProductRepository;
 import com.inventory.requests.ProductRequest;
+import com.inventory.requests.ProductSearchRequest;
 import com.inventory.responses.BaseResponse;
 import com.inventory.responses.ProductResponse;
 import com.inventory.utils.AppConstants;
@@ -16,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,89 +29,175 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public BaseResponse createUpdate(ProductRequest request) throws BaseException {
+    public BaseResponse createUpdate(List<ProductRequest> request) throws BaseException {
 
-        log.info("[Product] Create or update request {} ", request);
-        if(request == null || StringUtils.isBlank(request.getProductId())) {
+        log.info("[Product] Create or update request {}, start time {} ", request, new Date().getTime());
+        if(request == null) {
             log.error("[Product] Invalid null Request ");
             throw new BaseException(ErrorCodes.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), "Invalid Request");
         }
 
-        Product product = productRepository.findByProductId(request.getProductId());
-        if(product == null) {
-            return create(request);
-        } else {
-            return update(request, product);
-        }
-    }
+        List<String> productIdList = new ArrayList<>();
+        request.forEach(productRequest -> {
 
-    public BaseResponse create(ProductRequest request) throws BaseException {
-
-        if(request != null && !StringUtils.isBlank(request.getProductId())) {
-
-            Product product = new Product();
-            product.setProductId(request.getProductId());
-            product.setName(request.getName());
-            if(request.getMeta() != null)
-                product.setMeta(AppUtils.writeValueAsString(request.getMeta()));
-            product.setActive(true);
-
-            productRepository.save(product);
-            log.info("[Product] New product added successfully with Id {} ", request.getProductId());
+            Product product = productRepository.findByProductId(productRequest.getProductId());
+            if(product == null) {
+                if(AppConstants.SUCCESS.equals(create(productRequest)))
+                    productIdList.add(productRequest.getProductId());
+            } else {
+                if(AppConstants.SUCCESS.equals(update(productRequest, product)))
+                    productIdList.add(productRequest.getProductId());
+            }
+        });
+        log.info("[Product] Create or update request {}, end time {} ", request, new Date().getTime());
+        if(productIdList.isEmpty()) {
             return BaseResponse.builder()
-                    .status(AppConstants.SUCCESS)
-                    .message("Product added successfully")
+                    .status(AppConstants.ERROR)
+                    .message("Error in updating Product Data")
                     .build();
         }
         return BaseResponse.builder()
-                .status(AppConstants.ERROR)
-                .message("Error in adding Product")
+                .status(AppConstants.SUCCESS)
+                .message("Products Updated Successfully")
                 .build();
     }
 
+    public String create(ProductRequest request) {
 
-    public BaseResponse update(ProductRequest request, Product product) throws BaseException {
-
-        if(request != null && product != null
-                && !StringUtils.isBlank(request.getProductId())) {
-
+        if(request== null || StringUtils.isBlank(request.getProductId())) {
+            log.error("[Product] Error in adding product ");
+            return AppConstants.ERROR;
+        }
+        // Add new product details
+        Product product = new Product();
+        product.setProductId(request.getProductId());
+        if(!StringUtils.isBlank(request.getName()))
             product.setName(request.getName());
-            if(request.getMeta() != null)
-                product.setMeta(AppUtils.writeValueAsString(request.getMeta()));
+
+        if(request.getMeta() != null)
+            product.setMeta(AppUtils.writeValueAsString(request.getMeta()));
+
+        product.setActive(true);
+        productRepository.save(product);
+        log.info("[Product] New product added successfully with Id {} ", request.getProductId());
+        return AppConstants.SUCCESS;
+    }
+
+
+    public String update(ProductRequest request, Product product) {
+
+        if(request == null || product == null || StringUtils.isBlank(request.getProductId())) {
+            log.error("[Product] Error in updating product details");
+            return AppConstants.ERROR;
+        }
+        // Update product details
+        if(!StringUtils.isBlank(request.getName()))
+            product.setName(request.getName());
+
+        if(request.getMeta() != null)
+            product.setMeta(AppUtils.writeValueAsString(request.getMeta()));
+
+        if(request.getActive() != null)
             product.setActive(request.getActive());
 
-            productRepository.save(product);
-            log.info("[Product] Successfully updated product with Id {} ", request.getProductId());
-            return BaseResponse.builder()
-                    .status(AppConstants.SUCCESS)
-                    .message("Product updated successfully")
-                    .build();
+        productRepository.save(product);
+        log.info("[Product] Successfully updated product with Id {} ", request.getProductId());
+        return AppConstants.SUCCESS;
+    }
+
+
+    public ProductResponse read(String productId) throws BaseException {
+
+        log.info("[Product] Read product request, start time {} ", new Date().getTime());
+        if(StringUtils.isBlank(productId)) {
+            log.error("[Product] Invalid null Request ");
+            throw new BaseException(ErrorCodes.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), "Invalid Request");
         }
-        log.error("[Product] Error in updating product details");
+        // Read product from DB
+        Product product = productRepository.findByProductId(productId);
+        if(product == null) {
+            log.error("[Product] No product found with Id {} ",productId);
+            throw new BaseException(ErrorCodes.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND.value(), "Product details not found");
+        }
+        return buildProductResponse(product);
+    }
+
+
+    public List<ProductResponse> listProducts(String active) throws BaseException {
+
+        log.info("[Product] Fetch all products request, start time {} ", new Date().getTime());
+        List<Product> productList;
+        if(!StringUtils.isBlank(active) && ("true".equalsIgnoreCase(active)))
+            productList = productRepository.findByActive(Boolean.TRUE);
+        else if(!StringUtils.isBlank(active) && "false".equalsIgnoreCase(active))
+            productList = productRepository.findByActive(Boolean.FALSE);
+        else
+            productList = productRepository.findAll();
+
+        if(productList == null || productList.isEmpty()) {
+            log.error("[Product] No products found");
+            throw new BaseException(ErrorCodes.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND.value(), "Product details not found");
+        }
+        // Create product response List
+        List<ProductResponse> productResponseList = new ArrayList<>();
+        productList.forEach(product -> productResponseList.add(buildProductResponse(product)));
+        log.info("[Product] Fetch all products request, end time {} ", new Date().getTime());
+        return productResponseList;
+    }
+
+
+    public BaseResponse deactivate(String productId) throws BaseException {
+
+        log.info("[Product] Deactivate product request, start time {} ", new Date().getTime());
+        if(StringUtils.isBlank(productId)) {
+            log.error("[Product] Invalid null Request ");
+            throw new BaseException(ErrorCodes.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), "Invalid Request");
+        }
+        // Read product from DB
+        Product product = productRepository.findByProductId(productId);
+        if(product == null) {
+            log.error("[Product] No product found with Id {} ",productId);
+            throw new BaseException(ErrorCodes.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND.value(), "Product details not found");
+        }
+        // Deactivate product
+        product.setActive(false);
+        productRepository.save(product);
+        log.info("[Product] Deactivated product with Id {}, end time {} ", productId, new Date().getTime());
         return BaseResponse.builder()
-                .status(AppConstants.ERROR)
-                .message("Error in adding Product")
+                .status(AppConstants.SUCCESS)
+                .message("Product deactivated successfully")
                 .build();
     }
 
-    public List<ProductResponse> findAll() throws BaseException {
 
-        List<Product> productList = productRepository.findAll();
-        if(productList == null) {
-            log.error("[Product] No products found");
-            throw new BaseException(ErrorCodes.RESOURCE_NOT_FOUND, HttpStatus.NO_CONTENT.value(), "Product details not found");
+    public List<ProductResponse> searchProducts(ProductSearchRequest request) throws BaseException {
+
+        log.info("[Product] Search product request, start time {} ", new Date().getTime());
+        StringBuilder searchKey = new StringBuilder("%%");
+        if(request != null && !StringUtils.isBlank(request.getSearchKey()))
+            searchKey.insert(1, request.getSearchKey());
+
+        // Search product by productId, name
+        List<Product> productList = productRepository.searchProducts(searchKey.toString());
+        if(productList == null || productList.isEmpty()) {
+            log.error("[Product] No products match the search ");
+            throw new BaseException(ErrorCodes.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND.value(), "No products match the search");
         }
         List<ProductResponse> productResponseList = new ArrayList<>();
-        productList.forEach(product -> {
-
-            productResponseList.add(ProductResponse.builder()
-                    .productId(product.getProductId())
-                    .name(product.getName())
-                    .meta(!StringUtils.isBlank(product.getMeta()) ?
-                            AppUtils.readValue(product.getMeta(), new TypeReference<Map<String, Object>>(){}) : null)
-                    .active(product.getActive())
-                    .build());
-        });
+        productList.forEach(product -> productResponseList.add(buildProductResponse(product)));
+        log.info("[Product] Search product request end time {} ", new Date().getTime());
         return productResponseList;
+    }
+
+
+    private ProductResponse buildProductResponse(Product product) {
+
+        return ProductResponse.builder()
+                .productId(product.getProductId())
+                .name(product.getName())
+                .meta(!StringUtils.isBlank(product.getMeta()) ?
+                        AppUtils.readValue(product.getMeta(), new TypeReference<Map<String, Object>>(){}) : null)
+                .active(product.getActive())
+                .build();
     }
 }
