@@ -1,14 +1,11 @@
 package com.inventory.controllers;
 
 import com.inventory.exceptions.BaseException;
-import com.inventory.models.Product;
 import com.inventory.requests.ProductRequest;
 import com.inventory.requests.ProductSearchRequest;
 import com.inventory.services.ProductService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Api(value = "Product Controller")
+@Tag(name = "Product Controller")
 @RequestMapping(value = "/product")
 @RestController
 public class ProductController {
@@ -27,13 +24,8 @@ public class ProductController {
     private ProductService productService;
 
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 401, message = "Unauthorized request to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource is forbidden"),
-            @ApiResponse(code = 404, message = "Resource Not Found")
-    })
-    @ApiOperation(value = "Add or update products")
+
+    @Operation(summary = "Add or update products")
     @PostMapping(value = "/create-update", produces = "application/json")
     public ResponseEntity saveProducts(@RequestBody List<ProductRequest> request) throws BaseException {
         log.info("API Request: /product/create-update ");
@@ -41,13 +33,7 @@ public class ProductController {
     }
 
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 401, message = "Unauthorized request to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource is forbidden"),
-            @ApiResponse(code = 404, message = "Resource Not Found")
-    })
-    @ApiOperation(value = "Search Products", response = ResponseEntity.class)
+    @Operation(summary = "Search Products")
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity searchProducts(@RequestBody ProductSearchRequest request) throws BaseException {
         log.info("API Request: /product/list ");
@@ -55,13 +41,7 @@ public class ProductController {
     }
 
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 401, message = "Unauthorized request to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource is forbidden"),
-            @ApiResponse(code = 404, message = "Resource Not Found")
-    })
-    @ApiOperation(value = "List all Products", response = ResponseEntity.class)
+    @Operation(summary = "List all Products")
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listProducts(@RequestParam String active) throws BaseException {
         log.info("API Request: /product/list ");
@@ -69,13 +49,7 @@ public class ProductController {
     }
 
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 401, message = "Unauthorized request to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource is forbidden"),
-            @ApiResponse(code = 404, message = "Resource Not Found")
-    })
-    @ApiOperation(value = "Search a product with an Id",response = Product.class)
+    @Operation(summary = "Search a product with an Id")
     @GetMapping(value = "/read/{productId}", produces = "application/json")
     public ResponseEntity read(@PathVariable String productId) throws BaseException {
         log.info("API Request: /product/read ");
@@ -83,13 +57,7 @@ public class ProductController {
     }
 
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 401, message = "Unauthorized request to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource is forbidden"),
-            @ApiResponse(code = 404, message = "Resource Not Found")
-    })
-    @ApiOperation(value = "Deactivate a product")
+    @Operation(summary = "Deactivate a product")
     @GetMapping(value="/deactivate/{productId}", produces = "application/json")
     public ResponseEntity deactivate(@PathVariable String productId) throws BaseException {
         log.info("API Request: /product/deactivate ");
