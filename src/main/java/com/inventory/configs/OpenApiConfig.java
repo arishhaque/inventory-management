@@ -13,7 +13,7 @@ public class OpenApiConfig {
     @Bean
     public GroupedOpenApi api() {
         return GroupedOpenApi.builder()
-                .group("open-api")
+                .group("Inventory Management APIs")
                 .pathsToMatch("/**")
                 .packagesToScan("com.inventory.controllers")
                 .build();

@@ -7,6 +7,7 @@ import com.inventory.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,17 +36,20 @@ public class ProductController {
 
     @Operation(summary = "Search Products")
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity searchProducts(@RequestBody ProductSearchRequest request) throws BaseException {
-        log.info("API Request: /product/list ");
+    public ResponseEntity searchProducts(@RequestParam(required = false) Pageable pageable,
+                                         @RequestBody ProductSearchRequest request) throws BaseException {
+        log.info("API Request: /product/search ");
         return ResponseEntity.ok().body(productService.searchProducts(request));
     }
 
 
     @Operation(summary = "List all Products")
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity listProducts(@RequestParam String active) throws BaseException {
+    public ResponseEntity listProducts(@RequestParam(required = false) Boolean active,
+                                       @RequestParam(required = false) Integer pageNo,
+                                       @RequestParam(required = false) Integer pageSize) throws BaseException {
         log.info("API Request: /product/list ");
-        return ResponseEntity.ok().body(productService.listProducts(active));
+        return ResponseEntity.ok().body(productService.listProducts(active, pageNo, pageSize));
     }
 
 

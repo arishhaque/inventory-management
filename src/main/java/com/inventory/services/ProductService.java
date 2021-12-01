@@ -123,14 +123,19 @@ public class ProductService {
     }
 
 
-    public List<ProductResponse> listProducts(String active) throws BaseException {
+    public List<ProductResponse> listProducts(Boolean active, Integer pageNo, Integer pageSize) throws BaseException {
 
         log.info("[Product] Fetch all products request, start time {} ", new Date().getTime());
         List<Product> productList;
-        if(!StringUtils.isBlank(active) && ("true".equalsIgnoreCase(active)))
-            productList = productRepository.findByActive(Boolean.TRUE);
-        else if(!StringUtils.isBlank(active) && "false".equalsIgnoreCase(active))
-            productList = productRepository.findByActive(Boolean.FALSE);
+        if(pageNo == null || pageNo < 0)
+            pageNo = 0;
+        if(pageSize == null || pageSize < 0)
+            pageSize = 10;
+
+        Integer startRange = pageNo * pageSize;
+        Integer endRange = pageSize;
+        if(active != null)
+            productList = productRepository.findByActive(active, startRange, endRange);
         else
             productList = productRepository.findAll();
 
@@ -141,6 +146,8 @@ public class ProductService {
         // Create product response List
         List<ProductResponse> productResponseList = new ArrayList<>();
         productList.forEach(product -> productResponseList.add(buildProductResponse(product)));
+        // sort by product name
+        productResponseList.sort((p1, p2) ->  p1.getName().compareTo(p2.getName()));
         log.info("[Product] Fetch all products request, end time {} ", new Date().getTime());
         return productResponseList;
     }

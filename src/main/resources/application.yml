@@ -24,3 +24,6 @@ springdoc:
     path: /admin/v3/api-docs
   swagger-ui:
     path: /admin/swagger-ui.html
+  model-converters:
+      pageable-converter:
+        enabled: true
