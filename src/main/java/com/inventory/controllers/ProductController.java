@@ -1,5 +1,6 @@
 package com.inventory.controllers;
 
+import com.inventory.configs.AppConfig;
 import com.inventory.exceptions.BaseException;
 import com.inventory.requests.ProductRequest;
 import com.inventory.requests.ProductSearchRequest;
@@ -24,7 +25,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-
+    @Autowired
+    private AppConfig appConfig;
 
     @Operation(summary = "Add or update products")
     @PostMapping(value = "/create-update", produces = "application/json")

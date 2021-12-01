@@ -127,12 +127,12 @@ public class ProductService {
 
         log.info("[Product] Fetch all products request, start time {} ", new Date().getTime());
         List<Product> productList;
-        if(pageNo == null || pageNo < 0)
-            pageNo = 0;
-        if(pageSize == null || pageSize < 0)
+        if(pageNo == null || pageNo < 1)
+            pageNo = 1;
+        if(pageSize == null || pageSize < 1)
             pageSize = 10;
 
-        Integer startRange = pageNo * pageSize;
+        Integer startRange = (pageNo - 1) * pageSize;
         Integer endRange = pageSize;
         if(active != null)
             productList = productRepository.findByActive(active, startRange, endRange);
