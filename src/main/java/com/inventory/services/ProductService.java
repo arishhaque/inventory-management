@@ -42,22 +42,22 @@ public class ProductService {
 
             Product product = productRepository.findByProductId(productRequest.getProductId());
             if(product == null) {
-                if(AppConstants.SUCCESS.equals(create(productRequest)))
+                if(AppConstants.STATUS_SUCCESS.equals(create(productRequest)))
                     productIdList.add(productRequest.getProductId());
             } else {
-                if(AppConstants.SUCCESS.equals(update(productRequest, product)))
+                if(AppConstants.STATUS_SUCCESS.equals(update(productRequest, product)))
                     productIdList.add(productRequest.getProductId());
             }
         });
         log.info("[Product] Create or update request {}, end time {} ", request, new Date().getTime());
         if(productIdList.isEmpty()) {
             return BaseResponse.builder()
-                    .status(AppConstants.ERROR)
+                    .status(AppConstants.STATUS_ERROR)
                     .message("Error in updating Product Data")
                     .build();
         }
         return BaseResponse.builder()
-                .status(AppConstants.SUCCESS)
+                .status(AppConstants.STATUS_SUCCESS)
                 .message("Products Updated Successfully")
                 .build();
     }
@@ -66,7 +66,7 @@ public class ProductService {
 
         if(request== null || StringUtils.isBlank(request.getProductId())) {
             log.error("[Product] Error in adding product ");
-            return AppConstants.ERROR;
+            return AppConstants.STATUS_ERROR;
         }
         // Add new product details
         Product product = new Product();
@@ -80,7 +80,7 @@ public class ProductService {
         product.setActive(true);
         productRepository.save(product);
         log.info("[Product] New product added successfully with Id {} ", request.getProductId());
-        return AppConstants.SUCCESS;
+        return AppConstants.STATUS_SUCCESS;
     }
 
 
@@ -88,7 +88,7 @@ public class ProductService {
 
         if(request == null || product == null || StringUtils.isBlank(request.getProductId())) {
             log.error("[Product] Error in updating product details");
-            return AppConstants.ERROR;
+            return AppConstants.STATUS_ERROR;
         }
         // Update product details
         if(!StringUtils.isBlank(request.getName()))
@@ -102,7 +102,7 @@ public class ProductService {
 
         productRepository.save(product);
         log.info("[Product] Successfully updated product with Id {} ", request.getProductId());
-        return AppConstants.SUCCESS;
+        return AppConstants.STATUS_SUCCESS;
     }
 
 
@@ -171,7 +171,7 @@ public class ProductService {
         productRepository.save(product);
         log.info("[Product] Deactivated product with Id {}, end time {} ", productId, new Date().getTime());
         return BaseResponse.builder()
-                .status(AppConstants.SUCCESS)
+                .status(AppConstants.STATUS_SUCCESS)
                 .message("Product deactivated successfully")
                 .build();
     }

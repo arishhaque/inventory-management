@@ -29,7 +29,7 @@ public class ProductController {
     private AppConfig appConfig;
 
     @Operation(summary = "Add or update products")
-    @PostMapping(value = "/create-update", produces = "application/json")
+    @PostMapping(value = "/create-update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity saveProducts(@RequestBody List<ProductRequest> request) throws BaseException {
         log.info("API Request: /product/create-update ");
         return ResponseEntity.ok().body(productService.createUpdate(request));

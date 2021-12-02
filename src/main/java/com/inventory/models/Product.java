@@ -1,8 +1,15 @@
 package com.inventory.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import javax.persistence.*;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "product")
