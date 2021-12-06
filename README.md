@@ -28,18 +28,26 @@ a) Connect to MySQL using root and add new user
 (Match the username and password from src/main/resources/application.yml)
 
 b) Connect to MySQL using new user
+
    $ mysql -u admin -p
+   
    $ Enter password: *****
+   
    $ create database inventory_db;
  
  C) Initialize Database
+ 
 	$ mysql -u admin -p inventory_db < /path/inventory_db.sql
+	
 	$ Enter password: *****
+	
  
 ## 4. Start the Application
+
    $ java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8000 -jar inventory-management-1.0-SNAPSHOT.jar
  
 ## 5. Verify using below CURL
+
 	$ curl --location --request GET 'http://localhost:8080/inventory-service/api/v1.0/health-check'
 	Response: success
  
