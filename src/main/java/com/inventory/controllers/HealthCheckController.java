@@ -14,6 +14,6 @@ public class HealthCheckController {
     @Operation(summary = "Add or update products")
     @GetMapping(value = "/health-check", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity healthCheck() {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("success");
     }
 }
