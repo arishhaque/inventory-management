@@ -4,17 +4,16 @@
  
 ## 1. Install open JDK 11
 $ java --version
-
-openjdk version "11.0.1" 2018-10-16
-OpenJDK Runtime Environment 18.9 (build 11.0.1+13)
-OpenJDK 64-Bit Server VM 18.9 (build 11.0.1+13, mixed mode)
+$ openjdk version "11.0.1" 2018-10-16
+  OpenJDK Runtime Environment 18.9 (build 11.0.1+13)
+  OpenJDK 64-Bit Server VM 18.9 (build 11.0.1+13, mixed mode)
  
 ## 2. Install MySQL Community Server
-mysql --version (MacOs)
-mysql  Ver 8.0.22 for macos10.15 on x86_64
+$ mysql --version (MacOs)
+$ mysql  Ver 8.0.22 for macos10.15 on x86_64
  
-mysqld --version (Ubuntu)
-mysqld  Ver 8.0.22-0ubuntu0.18.04.1 for Linux on x86_64
+$ mysqld --version (Ubuntu)
+$ mysqld  Ver 8.0.22-0ubuntu0.18.04.1 for Linux on x86_64
  
 ## 3. Set up Database
 a) Connect to MySQL using root and add new user
