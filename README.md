@@ -1,6 +1,6 @@
-### Requirements
+## Requirements
 
-## Prerequisites to run the application
+### Prerequisites to run the application
  
 ## 1. Install open JDK 11
 	$ java --version
