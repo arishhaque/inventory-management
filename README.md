@@ -29,11 +29,11 @@ a) Connect to MySQL using root and add new user
 
 b) Connect to MySQL using new user
 
-   $ mysql -u admin -p
+   	$ mysql -u admin -p
    
-   $ Enter password: *****
+   	$ Enter password: *****
    
-   $ create database inventory_db;
+   	$ create database inventory_db;
  
  C) Initialize Database
  
