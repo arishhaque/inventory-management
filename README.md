@@ -53,7 +53,7 @@ b) Connect to MySQL using new user
  
 ## 4. Start the Application
 
-   $ java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8000 -jar inventory-management-1.0-SNAPSHOT.jar
+   	$ java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:8000 -jar inventory-management-1.0-SNAPSHOT.jar
  
 ## 5. Verify using below CURL
 
