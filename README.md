@@ -20,11 +20,17 @@
  
 ## 3. Set up Database
 a) Connect to MySQL using root and add new user
+
    $ mysql -u root -p
+   
    $ Enter password: *****
+   
    $ CREATE USER admin@'localhost' IDENTIFIED BY 'admin@123';
+   
    $ GRANT ALL ON *.* TO 'admin'@'localhost';
+   
    $ FLUSH PRIVILEGES;
+   
 (Match the username and password from src/main/resources/application.yml)
 
 b) Connect to MySQL using new user
